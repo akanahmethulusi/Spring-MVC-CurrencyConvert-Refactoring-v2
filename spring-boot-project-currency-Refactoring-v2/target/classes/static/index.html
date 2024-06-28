@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+</head>
+<body>
+<h1>Currency Converter</h1>
+
+<div>
+    <h2>Euro: <span id="euroValue"></span></h2>
+    <h2>Dollar: <span id="dollarValue"></span></h2>
+    <h2>Update Date: <span id="updateDate"></span></h2>
+</div>
+
+<script>
+    // JavaScript code to fetch data from Spring Boot Service and update HTML elements
+    async function fetchData() {
+        try {
+            const responseCurrencies = await fetch('/currencies'); // Fetch currencies data
+            if (!responseCurrencies.ok) {
+                throw new Error('Network response was not ok ' + responseCurrencies.statusText);
+            }
+            const data = await responseCurrencies.json();
+
+            // Log the data to see its structure
+            console.log(data);
+
+            // Assuming EUR and USD are keys in the returned JSON object
+            if (data['EUR'] && data['USD']) {
+                document.getElementById('euroValue').textContent = data['EUR'].Buying;
+                document.getElementById('dollarValue').textContent = data['USD'].Buying;
+            } else {
+                console.error('Currency data not found for EUR or USD');
+            }
+        } catch (error) {
+            console.error('Error fetching currency data:', error);
+        }
+
+        try {
+            const response = await fetch('/update-date'); // Fetch update date
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const updateDate = await response.text();
+            document.getElementById('updateDate').textContent = updateDate;
+        } catch (error) {
+            console.error('Error fetching update date:', error);
+        }
+    }
+
+    // Call the fetchData function when the page loads
+    window.onload = fetchData;
+</script>
+
+
+<spin><a href="alle_currency.html">Alle Wechselkurs Liste</a></spin><br/>
+<spin><a href="currency_convert.html">Currency Convert</a></spin>
+</body>
+</html>
+<!--
+/*
+
+*/
+-->

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Exchange Rates</title>
+  <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Wechselkurs</h1><h2>Aktualisierung Datum: <span id="updateDate"></span></h2>
+<table>
+  <thead>
+  <tr>
+    <th>Währung</th>
+    <th>Kaufrate</th>
+    <th>Verkaufsrate</th>
+  </tr>
+  </thead>
+  <tbody id="currencyTableBody">
+  <!-- Rows will be populated here by JavaScript -->
+  </tbody>
+</table>
+<!--h2>Update Date: <span id="updateDate"></span></h2-->
+
+<script>
+    // JavaScript code to fetch data from Spring Boot Service and update HTML elements
+    async function fetchData() {
+        try {
+            const responseCurrencies = await fetch('/currencies'); // Fetch currencies data
+            if (!responseCurrencies.ok) {
+                throw new Error('Network response was not ok ' + responseCurrencies.statusText);
+            }
+            const data = await responseCurrencies.json();
+
+            // Log the data to see its structure
+            console.log(data);
+
+            // Assuming the JSON object keys are the currency codes
+            const currencyTableBody = document.getElementById('currencyTableBody');
+            currencyTableBody.innerHTML = ''; // Clear existing rows
+
+            Object.keys(data).forEach(currency => {
+                const row = document.createElement('tr');
+                const currencyCell = document.createElement('td');
+                const buyingCell = document.createElement('td');
+                const sellingCell = document.createElement('td');
+
+                currencyCell.textContent = currency;
+                buyingCell.textContent = data[currency].Buying;
+                sellingCell.textContent = data[currency].Selling;
+
+                row.appendChild(currencyCell);
+                row.appendChild(buyingCell);
+                row.appendChild(sellingCell);
+                currencyTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching currency data:', error);
+        }
+
+        try {
+            const response = await fetch('/update-date'); // Fetch update date
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const updateDate = await response.text();
+            document.getElementById('updateDate').textContent = updateDate;
+        } catch (error) {
+            console.error('Error fetching update date:', error);
+        }
+    }
+
+    // Call the fetchData function when the page loads
+    window.onload = fetchData;
+</script>
+</body>
+</html>
