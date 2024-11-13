@@ -3,7 +3,7 @@
 This is version 2,  Currency Convert Project
 - Spring Boot
 - reading Json files from external URLs 
-- Spring Client(RestTemplate)
+- REST Client(RestTemplate)
 - Special Exception handling
 - Lombok
 - LOGGER
